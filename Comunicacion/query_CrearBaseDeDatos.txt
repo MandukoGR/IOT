@@ -1,0 +1,8 @@
+CREATE DATABASE tutorial;
+
+CREATE TABLE tabla(
+	id INT,
+	chipId INT,
+	fecha TIMESTAMP,
+	temperatura FLOAT(4,2)
+);
