@@ -1,0 +1,84 @@
+DROP DATABASE los_mosquitos
+
+CREATE DATABASE los_mosquitos CHARACTER SET = utf8;
+
+CREATE TABLE Room (
+	Id_room int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	Seed_type varchar(20),
+    Room_Name varchar(20)
+);
+
+CREATE TABLE Status_on_off (
+	Id_status_on_off int NOT NULL PRIMARY KEY,
+	Statuss varchar(20)
+);
+
+CREATE TABLE Notification (
+	Id_notification int NOT NULL PRIMARY KEY,
+    detail varchar(20),
+    Id_room int NOT NULL,
+    INDEX fk_Room(Id_room),
+    FOREIGN KEY (Id_room)
+        REFERENCES Room(Id_room)
+    ON UPDATE CASCADE 
+    ON DELETE CASCADE
+);
+
+CREATE TABLE Status_device (
+	Id_status int NOT NULL PRIMARY KEY,
+    type_system varchar(20),
+    datetimee timestamp,
+    Id_room int NOT NULL,
+    Id_status_on_off int NOT NULL,
+    INDEX fk_Room(Id_room),
+    FOREIGN KEY (Id_room)
+        REFERENCES Room(Id_room),
+    INDEX fk_Status_on_off(Id_status_on_off),
+    FOREIGN KEY (Id_status_on_off)
+        REFERENCES Status_on_off(Id_status_on_off)
+    ON UPDATE CASCADE 
+    ON DELETE CASCADE
+);
+
+CREATE TABLE Temperature (
+	Id_Temperature int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Temp int ,
+    Max_Temp int ,
+    Min_Temp int ,
+    Date_Temp timestamp ,
+    Id_room int NOT NULL,
+    INDEX fk_Room(Id_room),
+    FOREIGN KEY (Id_room)
+        REFERENCES Room(Id_room)
+    ON UPDATE CASCADE 
+    ON DELETE CASCADE
+);
+
+CREATE TABLE Humidity (
+	Id_Humidity int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Humi int ,
+    Max_Humi int ,
+    Min_Humi int ,
+    Date_Humi timestamp ,
+    Id_room int NOT NULL,
+    INDEX fk_Room(Id_room),
+    FOREIGN KEY (Id_room)
+        REFERENCES Room(Id_room)
+    ON UPDATE CASCADE 
+    ON DELETE CASCADE
+);
+
+CREATE TABLE Light (
+	Id_Light int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Light int ,
+    Max_Light int ,
+    Min_Light int ,
+    Date_Light timestamp ,
+    Id_room int NOT NULL,
+    INDEX fk_Room(Id_room),
+    FOREIGN KEY (Id_room)
+        REFERENCES Room(Id_room)
+    ON UPDATE CASCADE 
+    ON DELETE CASCADE
+);
+
