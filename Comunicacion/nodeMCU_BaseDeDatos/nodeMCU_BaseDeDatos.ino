@@ -6,13 +6,13 @@
 //-------------------VARIABLES GLOBALES--------------------------
 int contconexion = 0;
 
-const char *ssid = "";
-const char *password = "";
+const char *ssid = "GRed";
+const char *password = "Doctorortopedista01";
 
 unsigned long previousMillis = 0;
 
 char host[48];
-String strhost = "";
+String strhost = "192.168.68.102";
 String strurl = "/enviardatos.php";
 String chipid = "";
 
@@ -58,7 +58,7 @@ String enviardatos(String datos) {
 void setup() {
 
   // Inicia Serial
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("");
 
   Serial.print("chipId: "); 

@@ -1,13 +1,20 @@
 
 <?php
-$mysqli = new mysqli("localhost", "root", "", "tutorial");
+$mysqli = new mysqli("localhost", "root", "", "los_mosquitos");
 
-$chipid = $_POST ['chipid'];
-$temperatura = $_POST ['temperatura'];
+$Temperatura = $_POST ['Temperatura'];
+$Humedad = $_POST ['Humedad'];
+$Luz= $_POST ['Luz'];
 
-$sql = "INSERT INTO tabla (id, chipId, fecha, temperatura) VALUES (NULL, '$chipid', CURRENT_TIMESTAMP, '$temperatura');";
+$sql = "INSERT INTO Temperature(Temp, Fecha ) VALUES ('$Temperatura', CURRENT_TIMESTAMP);";
+$sql .= "INSERT INTO Humidity(Hum, Fecha ) VALUES ('$Humedad', CURRENT_TIMESTAMP);";
+$sql .= "INSERT INTO Light(Li, Fecha ) VALUES ('$Luz', CURRENT_TIMESTAMP);";
 
-$mysqli->query($sql);
+
+
+$mysqli->multi_query($sql);
+
+
 
 echo "Datos ingresados correctamente.";
 ?>
