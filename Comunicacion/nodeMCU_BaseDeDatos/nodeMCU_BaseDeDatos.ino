@@ -1,20 +1,39 @@
-
-
+#include <Servo.h>
 #include "ESP8266WiFi.h"
-#include <WiFiClient.h> 
+#include <WiFiClient.h>
 
-//-------------------VARIABLES GLOBALES--------------------------
+// Incluimos librería
+#include <DHT.h>
+ 
+// Definimos el pin digital donde se conecta el sensor
+#define DHTPIN 4
+// Dependiendo del tipo de sensor
+#define DHTTYPE DHT1
+
+DHT dht(DHTPIN, DHTTYPE);
+
+int fotores = A0;
+int ledPin = 0;
+byte dat[5];
+int servoPin = 2;
+int motorPinR = 16;
+int motorPinL = 5;
+Servo servo;
+
+//-------------------VARIABLES Necesarias para conexión--------------------------
 int contconexion = 0;
 
-const char *ssid = "GRed";
-const char *password = "Doctorortopedista01";
+const char *ssid = "";
+const char *password = "";
 
 unsigned long previousMillis = 0;
 
 char host[48];
-String strhost = "192.168.68.102";
+String strhost = "";
 String strurl = "/enviardatos.php";
 String chipid = "";
+//--------------------------------------------------------------------------------
+
 
 //-------Función para Enviar Datos a la Base de Datos SQL--------
 
@@ -55,18 +74,18 @@ String enviardatos(String datos) {
 
 //-------------------------------------------------------------------------
 
-void setup() {
 
-  // Inicia Serial
+void setup()
+{
   Serial.begin(9600);
-  Serial.println("");
-
-  Serial.print("chipId: "); 
-  chipid = String(ESP.getChipId());
-  Serial.println(chipid); 
+  pinMode(DHpin, OUTPUT);
+  pinMode(fotores, INPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(motorPin, OUTPUT);
+  servo.attach(servoPin);
 
   // Conexión WIFI
-  WiFi.begin(ssid, password);
+  /*WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED and contconexion <50) { //Cuenta hasta 50 si no se puede conectar lo cancela
     ++contconexion;
     delay(500);
@@ -86,11 +105,71 @@ void setup() {
   else { 
       Serial.println("");
       Serial.println("Error de conexion");
-  }
+  }*/
+
+  dht.begin();
 }
 
-//--------------------------LOOP--------------------------------
-void loop() {
+}
+
+void loop()
+{
+
+ // Leemos la humedad relativa
+  float h = dht.readHumidity();
+  // Leemos la temperatura en grados centígrados (por defecto)
+  float t = dht.readTemperature();
+  
+  
+  Serial.print("Humdity = ");
+  Serial.print(h); //Displays the integer bits of humidity;
+  Serial.println('%');
+  Serial.print("Temperature = ");
+  Serial.print(t); //Displays the integer bits of temperature;
+  Serial.println('C');
+
+
+  float luz = analogRead(fotores);
+  Serial.print("Light: ");
+  Serial.println(luz);
+  if (luz < 60)
+  {
+    digitalWrite(ledPin, HIGH);
+  }
+
+  else
+  {
+
+    digitalWrite(ledPin, LOW);
+  }
+
+  if (isnan(h) || isnan(t)) {
+      Serial.println("Error obteniendo los datos del sensor DHT11");
+      return;
+    } else {
+        if (h > 50)
+  {
+    servo.write(180);
+  }
+  else
+  {
+    servo.write(0);
+  }
+
+  if (t > 22.1)
+  {
+    digitalWrite(motorPin, HIGH);
+  }
+  else
+  {
+    digitalWrite(motorPin, LOW);
+  }
+
+    }
+
+  delay(1000);
+
+
 
   unsigned long currentMillis = millis();
 
@@ -99,7 +178,6 @@ void loop() {
     //int analog = analogRead(17);
     //float temp = analog*0.322265625;
     //Serial.println(temp);
-    enviardatos("chipid=" + chipid);
-    //+"&temperatura=" + String(temp, 2));
+    enviardatos("&Temperatura=" + String(temperature, 2) + "&Humedad=" + String(humidity, 2) + "&Luz=" + String(luz, 2));
   }
 }
