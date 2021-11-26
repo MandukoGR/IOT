@@ -59,7 +59,7 @@ String enviardatos(String datos) {
                "Referer: http://mosquittos.000webhostapp.com/" + "\r\n" + 
                //"Referer: http://mosquittos.000webhostapp.com/formulario.html" + "\r\n" + 
                //"Accept-Encoding: gzip, deflate" + "\r\n" + 
-               "Accept-Language: es-419,es;q=0.9" + "\r\n" + 
+               "Accept-Language: es-419,es;q=0.9" + "\r\n" + datos);
                //"Cookie: __test=ae7b6232b8d04bf6ba4c8f0b2dacf440; _ga=GA1.2.1237456778.1637947962; _gid=GA1.2.1211747032.1637947962; __gads=ID=131162c3df6cb4f3-22207d6598cc006d:T=1637947962:RT=1637947962:S=ALNI_MYEKOmuH7MfikF4rr_FPAuI6pG-cA" + "\r\n" +             
                //"\r\n" + datos);             
   delay(10);             
