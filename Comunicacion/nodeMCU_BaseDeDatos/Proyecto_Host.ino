@@ -27,7 +27,7 @@ const char *password = "4988521072";
 
 unsigned long previousMillis = 0;
 
-char *host = "185.27.134.112" ;
+char *host = "185.27.134.112";
 String strhost = "losmosquittos.epizy.com";
 String strurl = "/enviardatos.php";
 String chipid = "";
@@ -55,7 +55,7 @@ String enviardatos(String datos) {
                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36 OPR/63.0.3368.94" + "\r\n" + 
                "Content-Type: application/x-www-form-urlencoded" + "\r\n" + 
                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8" + "\r\n" + 
-               "Referer: http://losmosquittos.epizy.com/formulario.html" + "\r\n" + 
+               "Referer: http://losmosquittos.epizy.com/" + "\r\n" + 
                //"Referer: http://losmosquittos.epizy.com/formulario.html" + "\r\n" + 
                //"Accept-Encoding: gzip, deflate" + "\r\n" + 
                "Accept-Language: es-419,es;q=0.9" + "\r\n" + 
@@ -76,8 +76,9 @@ String enviardatos(String datos) {
   // Lee todas las lineas que recibe del servidro y las imprime por la terminal serial
   while(client.available()){
     linea = client.readStringUntil('\r');
+    Serial.print(linea);
   }  
-  Serial.println(linea);
+  //Serial.println(linea);
   return linea;
 }
 
