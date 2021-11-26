@@ -4,22 +4,31 @@
 int DHpin = 4; // input/output pin
 int fotores = A0;
 int ledPin = 0;
-byte dat[5];
 int servoPin = 2;
 int motorPinR = 16;
 int motorPinL = 5;
+
+#include <DHT.h>
+ 
+// Definimos el pin digital donde se conecta el sensor
+#define DHTPIN 4
+// Dependiendo del tipo de sensor
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
 Servo servo;
 
 //-------------------VARIABLES Necesarias para conexión--------------------------
 int contconexion = 0;
 
-const char *ssid = "GRed";
-const char *password = "Doctorortopedista01";
+const char *ssid = "INFINITUM3DB3_2.4";
+const char *password = "4988521072";
 
 unsigned long previousMillis = 0;
 
-char *host = "145.14.145.82" ;
-String strhost = "losmosquittos.000webhostapp.com";
+char *host = "185.27.134.112" ;
+String strhost = "losmosquittos.epizy.com";
 String strurl = "/enviardatos.php";
 String chipid = "";
 //--------------------------------------------------------------------------------
@@ -41,15 +50,16 @@ String enviardatos(String datos) {
                "Connection: keep-alive" + "\r\n" + 
                "Content-Length: " + datos.length() + "\r\n" +
                "Cache-Control: max-age=0" + "\r\n" + 
-               "Origin: http://tutorialesp.epizy.com" + "\r\n" + 
+               "Origin: http://losmosquittos.epizy.com" + "\r\n" + 
                "Upgrade-Insecure-Requests: 1" + "\r\n" + 
-               "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36 OPR/46.0.2597.32" + "\r\n" + 
+               "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36 OPR/63.0.3368.94" + "\r\n" + 
                "Content-Type: application/x-www-form-urlencoded" + "\r\n" + 
                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8" + "\r\n" + 
-               "Referer: https://losmosquittos.000webhostapp.com/" + "\r\n" + 
+               "Referer: http://losmosquittos.epizy.com/formulario.html" + "\r\n" + 
+               //"Referer: http://losmosquittos.epizy.com/formulario.html" + "\r\n" + 
                //"Accept-Encoding: gzip, deflate" + "\r\n" + 
-               "Accept-Language: es-419,es;q=0.8" + "\r\n" + 
-               "Cookie: __test=f8113e8304f87333c04e20518549f29c; _ga=GA1.2.2140598187.1499029965; _gid=GA1.2.1824054122.1499029966" + "\r\n" +             
+               "Accept-Language: es-419,es;q=0.9" + "\r\n" + 
+               "Cookie: __test=ae7b6232b8d04bf6ba4c8f0b2dacf440; _ga=GA1.2.1237456778.1637947962; _gid=GA1.2.1211747032.1637947962; __gads=ID=131162c3df6cb4f3-22207d6598cc006d:T=1637947962:RT=1637947962:S=ALNI_MYEKOmuH7MfikF4rr_FPAuI6pG-cA" + "\r\n" +             
                "\r\n" + datos);             
   delay(10);             
   
@@ -71,53 +81,14 @@ String enviardatos(String datos) {
   return linea;
 }
 
-//-------------------------------------------------------------------------
-
-
-byte read_data()
-{
-	byte i = 0;
-	byte result = 0;
-	for (i = 0; i < 8; i++)
-	{
-		while (digitalRead(DHpin) == LOW)
-			;				   // wait 50us
-		delayMicroseconds(30); //The duration of the high level is judged to determine whether the data is '0' or '1'
-		if (digitalRead(DHpin) == HIGH)
-			result |= (1 << (8 - i)); //High in the former, low in the post
-		while (digitalRead(DHpin) == HIGH)
-			; //Data '1', waiting for the next bit of reception
-	}
-	return result;
-}
-
-void start_test()
-{
-	digitalWrite(DHpin, LOW); //Pull down the bus to send the start signal
-	delay(30);				  //The delay is greater than 18 ms so that DHT 11 can detect the start signal
-	digitalWrite(DHpin, HIGH);
-	delayMicroseconds(40); //Wait for DHT11 to respond
-	pinMode(DHpin, INPUT);
-	while (digitalRead(DHpin) == HIGH)
-		;
-	delayMicroseconds(80); //The DHT11 responds by pulling the bus low for 80us;
-
-	if (digitalRead(DHpin) == LOW)
-		delayMicroseconds(80);	//DHT11 pulled up after the bus 80us to start sending data;
-	for (int i = 0; i < 5; i++) //Receiving temperature and humidity data, check bits are not considered;
-		dat[i] = read_data();
-	pinMode(DHpin, OUTPUT);
-	digitalWrite(DHpin, HIGH); //After the completion of a release of data bus, waiting for the host to start the next signal
-}
-
 void setup()
 {
-	Serial.begin(9600);
-	pinMode(DHpin, OUTPUT);
-	pinMode(fotores, INPUT);
-	pinMode(ledPin, OUTPUT);
-	pinMode(motorPin, OUTPUT);
-	servo.attach(servoPin);
+  Serial.begin(9600);
+
+  pinMode(fotores, INPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(motorPinR, OUTPUT);
+  servo.attach(servoPin);
 
   // Conexión WIFI
   WiFi.begin(ssid, password);
@@ -141,64 +112,65 @@ void setup()
       Serial.println("");
       Serial.println("Error de conexion");
   }
+
+  dht.begin();
 }
 
-}
+
 
 void loop()
 {
-	// put your main code here, to run repeatedly:
-	start_test();
-	Serial.print("Humdity = ");
-	Serial.print(dat[0], DEC); //Displays the integer bits of humidity;
-	Serial.print('.');
-	Serial.print(dat[1], DEC); //Displays the decimal places of the humidity;
-	Serial.println('%');
-	Serial.print("Temperature = ");
-	Serial.print(dat[2], DEC); //Displays the integer bits of temperature;
-	Serial.print('.');
-	Serial.print(dat[3], DEC); //Displays the decimal places of the temperature;
-	Serial.println('C');
+  // Leemos la humedad relativa
+  float h = dht.readHumidity();
+  // Leemos la temperatura en grados centígrados (por defecto)
+  float t = dht.readTemperature();
+  
+  
+  Serial.print("Humdity = ");
+  Serial.print(h); //Displays the integer bits of humidity;
+  Serial.println('%');
+  Serial.print("Temperature = ");
+  Serial.print(t); //Displays the integer bits of temperature;
+  Serial.println('C');
 
-	byte checksum = dat[0] + dat[1] + dat[2] + dat[3];
 
-	float luz = analogRead(fotores);
-	Serial.print("Light: ");
-	Serial.println(luz);
-	if (luz < 60)
-	{
-		digitalWrite(ledPin, HIGH);
-	}
+  float luz = analogRead(fotores);
+  Serial.print("Light: ");
+  Serial.println(luz);
+  if (luz < 60)
+  {
+    digitalWrite(ledPin, HIGH);
+  }
 
-	else
-	{
+  else
+  {
 
-		digitalWrite(ledPin, LOW);
-	}
+    digitalWrite(ledPin, LOW);
+  }
 
-	double humidity = dat[0] + dat[1];
-	double temperature = dat[2] + dat[3];
+  if (isnan(h) || isnan(t)) {
+      Serial.println("Error obteniendo los datos del sensor DHT11");
+      return;
+    } else {
+        if (h > 50)
+  {
+    servo.write(180);
+  }
+  else
+  {
+    servo.write(0);
+  }
 
-	if (humidity > 50)
-	{
-		servo.write(180);
-	}
-	else
-	{
-		servo.write(0);
-	}
+  if (t > 22.1)
+  {
+    digitalWrite(motorPinR, HIGH);
+  }
+  else
+  {
+    digitalWrite(motorPinR, LOW);
+  }
 
-	if (temperature > 22.1)
-	{
-		digitalWrite(motorPin, HIGH);
-	}
-	else
-	{
-		digitalWrite(motorPin, LOW);
-	}
-
-	delay(1000);
-
+    }
 
 
   unsigned long currentMillis = millis();
@@ -208,6 +180,6 @@ void loop()
     //int analog = analogRead(17);
     //float temp = analog*0.322265625;
     //Serial.println(temp);
-    enviardatos("&Temperatura=" + String(temperature, 2) + "&Humedad=" + String(humidity, 2) + "&Luz=" + String(luz, 2));
+    enviardatos("&Temperatura=" + String(t, 2) + "&Humedad=" + String(h, 2) + "&Luz=" + String(luz, 2));
   }
 }

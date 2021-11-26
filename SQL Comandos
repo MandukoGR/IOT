@@ -25,5 +25,7 @@ CREATE TABLE Light (
 
 
 
-
+DROP TABLE Temperature;
+DROP TABLE Humidity;
+DROP TABLE Light;
 
