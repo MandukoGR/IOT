@@ -1,0 +1,27 @@
+#logo {
+	width: 100%;
+}
+
+body {
+	font-family: 'Roboto', sans-serif;
+}
+
+#temperatura {
+	text-align: center;
+	margin: 0 auto;
+}
+
+#humedad {
+	text-align: center;
+	margin: 0 auto;
+}
+
+
+.boton{
+	display:  flex;
+	align-items: center;
+	justify-content: center;
+
+}
+.boton .card{	margin: 0!important;
+}

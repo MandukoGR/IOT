@@ -13,13 +13,13 @@ Servo servo;
 //-------------------VARIABLES Necesarias para conexión--------------------------
 int contconexion = 0;
 
-const char *ssid = "";
-const char *password = "";
+const char *ssid = "GRed";
+const char *password = "Doctorortopedista01";
 
 unsigned long previousMillis = 0;
 
-char host[48];
-String strhost = "";
+char *host = "145.14.145.82" ;
+String strhost = "losmosquittos.000webhostapp.com";
 String strurl = "/enviardatos.php";
 String chipid = "";
 //--------------------------------------------------------------------------------
@@ -30,18 +30,27 @@ String chipid = "";
 String enviardatos(String datos) {
   String linea = "error";
   WiFiClient client;
-  strhost.toCharArray(host, 49);
+  //strhost.toCharArray(host, 49);
   if (!client.connect(host, 80)) {
     Serial.println("Fallo de conexion");
     return linea;
   }
 
-  client.print(String("POST ") + strurl + " HTTP/1.1" + "\r\n" + 
+    client.print(String("POST ") + strurl + " HTTP/1.1" + "\r\n" + 
                "Host: " + strhost + "\r\n" +
-               "Accept: */*" + "*\r\n" +
+               "Connection: keep-alive" + "\r\n" + 
                "Content-Length: " + datos.length() + "\r\n" +
-               "Content-Type: application/x-www-form-urlencoded" + "\r\n" +
-               "\r\n" + datos);           
+               "Cache-Control: max-age=0" + "\r\n" + 
+               "Origin: http://tutorialesp.epizy.com" + "\r\n" + 
+               "Upgrade-Insecure-Requests: 1" + "\r\n" + 
+               "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36 OPR/46.0.2597.32" + "\r\n" + 
+               "Content-Type: application/x-www-form-urlencoded" + "\r\n" + 
+               "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8" + "\r\n" + 
+               "Referer: https://losmosquittos.000webhostapp.com/" + "\r\n" + 
+               //"Accept-Encoding: gzip, deflate" + "\r\n" + 
+               "Accept-Language: es-419,es;q=0.8" + "\r\n" + 
+               "Cookie: __test=f8113e8304f87333c04e20518549f29c; _ga=GA1.2.2140598187.1499029965; _gid=GA1.2.1824054122.1499029966" + "\r\n" +             
+               "\r\n" + datos);             
   delay(10);             
   
   Serial.print("Enviando datos a SQL...");
