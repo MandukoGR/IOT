@@ -46,22 +46,12 @@ String enviardatos(String datos) {
     return linea;
   }
 
-    client.print(String("POST ") + strurl + " HTTP/1.1" + "\r\n" + 
+   client.print(String("POST ") + strurl + " HTTP/1.1" + "\r\n" + 
                "Host: " + strhost + "\r\n" +
-               "Connection: keep-alive" + "\r\n" + 
+               "Accept: */*" + "*\r\n" +
                "Content-Length: " + datos.length() + "\r\n" +
-               "Cache-Control: max-age=0" + "\r\n" + 
-               "Origin: http://mosquittos.000webhostapp.com" + "\r\n" + 
-               "Upgrade-Insecure-Requests: 1" + "\r\n" + 
-               "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36 OPR/63.0.3368.94 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8" + "\r\n" + 
-               "Content-Type: application/x-www-form-urlencoded" + "\r\n" + 
-               "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8" + "\r\n" + 
-               "Referer: http://mosquittos.000webhostapp.com/" + "\r\n" + 
-               //"Referer: http://mosquittos.000webhostapp.com/formulario.html" + "\r\n" + 
-               //"Accept-Encoding: gzip, deflate" + "\r\n" + 
-               "Accept-Language: es-419,es;q=0.9" + "\r\n" + datos);
-               //"Cookie: __test=ae7b6232b8d04bf6ba4c8f0b2dacf440; _ga=GA1.2.1237456778.1637947962; _gid=GA1.2.1211747032.1637947962; __gads=ID=131162c3df6cb4f3-22207d6598cc006d:T=1637947962:RT=1637947962:S=ALNI_MYEKOmuH7MfikF4rr_FPAuI6pG-cA" + "\r\n" +             
-               //"\r\n" + datos);             
+               "Content-Type: application/x-www-form-urlencoded" + "\r\n" +
+               "\r\n" + datos);
   delay(10);             
   
   Serial.print("Enviando datos a SQL...");
