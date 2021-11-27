@@ -38,39 +38,24 @@ String chipid = "";
 //-------Función para Enviar Datos a la Base de Datos SQL--------
 
 String enviardatos(String datos) {
-  String linea = "error";
-  WiFiClient client;
-  //strhost.toCharArray(host, 49);
-  if (!client.connect(host, 80)) {
-    Serial.println("Fallo de conexion");
-    return linea;
-  }
+  if (client.connect(server,80))  
+                  {  
+                    Serial.println("connected to server");
+                      data = "hello";
 
-   client.print(String("POST ") + strurl + " HTTP/1.1" + "\r\n" + 
-               "Host: " + strhost + "\r\n" +
-               "Accept: */*" + "*\r\n" +
-               "Content-Length: " + datos.length() + "\r\n" +
-               "Content-Type: application/x-www-form-urlencoded" + "\r\n" +
-               "\r\n" + datos);
-  delay(10);             
-  
-  Serial.print("Enviando datos a SQL...");
-  
-  unsigned long timeout = millis();
-  while (client.available() == 0) {
-    if (millis() - timeout > 5000) {
-      Serial.println("Cliente fuera de tiempo!");
+                         client.print("POST /http://mosquittos.000webhostapp.com/enviardatos.php HTTP/1.1\n");
+                         client.print("Host:  files.000webhost.com");
+                         client.print("User-Agent: esp8266/1.0");
+                         client.print("connection: close");
+                         client.print("Content-Type: application/x-www-form-urlencoded\n");
+                         client.print("Content-Length: ");
+                         client.print(data.length());                            
+                         client.print(data);
+                         Serial.print(data);
+                    }
       client.stop();
-      return linea;
-    }
-  }
-  // Lee todas las lineas que recibe del servidro y las imprime por la terminal serial
-  while(client.available()){
-    linea = client.readStringUntil('\r');
-    Serial.print(linea);
-  }  
-  //Serial.println(linea);
-  return linea;
+
+      Serial.println("Waiting...");
 }
 
 void setup()
@@ -83,27 +68,18 @@ void setup()
   servo.attach(servoPin);
 
   // Conexión WIFI
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED and contconexion <50) { //Cuenta hasta 50 si no se puede conectar lo cancela
-    ++contconexion;
-    delay(500);
-    Serial.print(".");
-  }
-  if (contconexion <50) {
-      //para usar con ip fija
-      IPAddress ip(192,168,1,156); 
-      IPAddress gateway(192,168,1,1); 
-      IPAddress subnet(255,255,255,0); 
-      WiFi.config(ip, gateway, subnet); 
-      
-      Serial.println("");
-      Serial.println("WiFi conectado");
-      Serial.println(WiFi.localIP());
-  }
-  else { 
-      Serial.println("");
-      Serial.println("Error de conexion");
-  }
+   delay(10);     
+   Serial.println("Connecting to ");
+   Serial.println(ssid);
+   WiFi.begin(ssid, pass);
+
+  while (WiFi.status() != WL_CONNECTED) 
+ {
+        delay(500);
+        Serial.print(".");
+ }
+  Serial.println("");
+  Serial.println("WiFi connected");
 
   dht.begin();
 }
