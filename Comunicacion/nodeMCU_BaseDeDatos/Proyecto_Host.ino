@@ -41,7 +41,6 @@ String enviardatos(String datos) {
   if (client.connect(server,80))  
                   {  
                     Serial.println("connected to server");
-                      data = "hello";
 
                          client.print("POST /http://mosquittos.000webhostapp.com/enviardatos.php HTTP/1.1\n");
                          client.print("Host:  files.000webhost.com");
@@ -49,9 +48,9 @@ String enviardatos(String datos) {
                          client.print("connection: close");
                          client.print("Content-Type: application/x-www-form-urlencoded\n");
                          client.print("Content-Length: ");
-                         client.print(data.length());                            
-                         client.print(data);
-                         Serial.print(data);
+                         client.print(datos.length());                            
+                         client.print(datos);
+                         Serial.print(datos);
                     }
       client.stop();
 
