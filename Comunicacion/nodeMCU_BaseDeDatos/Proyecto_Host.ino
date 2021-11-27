@@ -1,4 +1,5 @@
 #include "ESP8266WiFi.h"
+#include <ESP8266HTTPClient.h>
 #include <WiFiClient.h> 
 #include <Servo.h>
 int DHpin = 4; // input/output pin
@@ -23,15 +24,10 @@ Servo servo;
 int contconexion = 0;
 
 const char *ssid = "INFINITUM3DB3_2.4";
-const char *password = "4988521072";
-
-unsigned long previousMillis = 0;
-
-char *host = "145.14.145.94";
-//char *host = "145.14.145.150"; Por si no sirve la otra
-String strhost = "mosquittos.000webhostapp.com";
-String strurl = "/enviardatos.php";
-String chipid = "";
+const char *pass = "4988521072";
+const char* server = “vathsalblog.000webhostapp.com/recieve.php 118”;
+String data;
+WiFiClient client;
 //--------------------------------------------------------------------------------
 
 
