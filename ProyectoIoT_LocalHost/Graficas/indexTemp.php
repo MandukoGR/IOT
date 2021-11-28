@@ -36,8 +36,8 @@
 
 	$(document).ready(function(){
 		setInterval(() => {
-			$('#cargaLineal').load('lineal.php');
-			$('#cargaBarras').load('barras.php');
+			$('#cargaLineal').load('linealTemp.php');
+			$('#cargaBarras').load('barrasTemp.php');
 		}, 1000);
 		
 	});
