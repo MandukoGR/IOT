@@ -1,37 +1,38 @@
-#include <Servo.h>
 #include "ESP8266WiFi.h"
-#include <WiFiClient.h>
+#include <WiFiClient.h> 
+#include <Servo.h>
+int DHpin = 4; // input/output pin
+int fotores = A0;
+int ledPin = 0;
+int servoPin = 2;
+int motorPinR = 16;
+int motorPinL = 5;
 
-// Incluimos librería
 #include <DHT.h>
  
 // Definimos el pin digital donde se conecta el sensor
 #define DHTPIN 4
 // Dependiendo del tipo de sensor
-#define DHTTYPE DHT1
+#define DHTTYPE DHT11
 
 DHT dht(DHTPIN, DHTTYPE);
 
-int fotores = A0;
-int ledPin = 0;
-byte dat[5];
-int servoPin = 2;
-int motorPinR = 16;
-int motorPinL = 5;
 Servo servo;
+
+unsigned long previousMillis = 0;
 
 //-------------------VARIABLES Necesarias para conexión--------------------------
 int contconexion = 0;
 
-const char *ssid = "";
-const char *password = "";
+const char *ssid = "Moto";
+const char *pass = "57142857";
 
-unsigned long previousMillis = 0;
 
 char host[48];
-String strhost = "";
+String strhost = "192.168.41.38";
 String strurl = "/enviardatos.php";
-String chipid = "";
+
+
 //--------------------------------------------------------------------------------
 
 
@@ -71,51 +72,37 @@ String enviardatos(String datos) {
   Serial.println(linea);
   return linea;
 }
-
-//-------------------------------------------------------------------------
-
-
 void setup()
 {
   Serial.begin(9600);
-  pinMode(DHpin, OUTPUT);
+
   pinMode(fotores, INPUT);
   pinMode(ledPin, OUTPUT);
-  pinMode(motorPin, OUTPUT);
+  pinMode(motorPinR, OUTPUT);
   servo.attach(servoPin);
 
   // Conexión WIFI
-  /*WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED and contconexion <50) { //Cuenta hasta 50 si no se puede conectar lo cancela
-    ++contconexion;
-    delay(500);
-    Serial.print(".");
-  }
-  if (contconexion <50) {
-      //para usar con ip fija
-      IPAddress ip(192,168,1,156); 
-      IPAddress gateway(192,168,1,1); 
-      IPAddress subnet(255,255,255,0); 
-      WiFi.config(ip, gateway, subnet); 
-      
-      Serial.println("");
-      Serial.println("WiFi conectado");
-      Serial.println(WiFi.localIP());
-  }
-  else { 
-      Serial.println("");
-      Serial.println("Error de conexion");
-  }*/
+   delay(10);     
+   Serial.println("Connecting to ");
+   Serial.println(ssid);
+   WiFi.begin(ssid, pass);
+
+  while (WiFi.status() != WL_CONNECTED) 
+ {
+        delay(500);
+        Serial.print(".");
+ }
+  Serial.println("");
+  Serial.println("WiFi connected");
 
   dht.begin();
 }
 
-}
+
 
 void loop()
 {
-
- // Leemos la humedad relativa
+  // Leemos la humedad relativa
   float h = dht.readHumidity();
   // Leemos la temperatura en grados centígrados (por defecto)
   float t = dht.readTemperature();
@@ -123,10 +110,10 @@ void loop()
   
   Serial.print("Humdity = ");
   Serial.print(h); //Displays the integer bits of humidity;
-  Serial.println('%');
+  Serial.print("%\t");
   Serial.print("Temperature = ");
   Serial.print(t); //Displays the integer bits of temperature;
-  Serial.println('C');
+  Serial.print("C\t");
 
 
   float luz = analogRead(fotores);
@@ -158,17 +145,14 @@ void loop()
 
   if (t > 22.1)
   {
-    digitalWrite(motorPin, HIGH);
+    digitalWrite(motorPinR, HIGH);
   }
   else
   {
-    digitalWrite(motorPin, LOW);
+    digitalWrite(motorPinR, LOW);
   }
 
     }
-
-  delay(1000);
-
 
 
   unsigned long currentMillis = millis();
@@ -178,6 +162,6 @@ void loop()
     //int analog = analogRead(17);
     //float temp = analog*0.322265625;
     //Serial.println(temp);
-    enviardatos("&Temperatura=" + String(temperature, 2) + "&Humedad=" + String(humidity, 2) + "&Luz=" + String(luz, 2));
+    enviardatos("&Temperatura=" + String(t, 2) + "&Humedad=" + String(h, 2) + "&Luz=" + String(luz, 2));
   }
 }
