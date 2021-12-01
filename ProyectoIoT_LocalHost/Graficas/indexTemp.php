@@ -25,7 +25,7 @@
 				<h1>Los Mosquitos</h1>
 				<h2>Reportes</h2>
 			</div>
-		</div>
+	</div>
 
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 	<div class="container-fluid">
