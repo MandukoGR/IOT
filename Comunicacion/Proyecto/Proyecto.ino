@@ -3,8 +3,8 @@
 #include <Servo.h>
 
 int fotores = A0;
-int ledPin = 0;
-int servoPin = 14;
+int ledPin = 15;
+int servoPin = 0;
 int motorPinR = 16;
 int motorPinL = 5;
 
@@ -24,12 +24,12 @@ unsigned long previousMillis = 0;
 //-------------------VARIABLES Necesarias para conexión--------------------------
 int contconexion = 0;
 
-const char *ssid = "Moto";
-const char *pass = "57142857";
+const char *ssid = "iPhone";
+const char *pass = "12345678";
 
 
 char host[48];
-String strhost = "192.168.41.38";
+String strhost = "172.20.10.7"
 String strurl = "/enviardatos.php";
 
 
@@ -136,15 +136,7 @@ void loop()
     relTemp = ((tempSum/tempCount)/startTemp)*100;
     relLight = ((lightSum/lightCount)/startLight)*100;
     
-    Serial.print("Humdity = ");
-  Serial.print(relHum); //Displays the integer bits of humidity;
-  Serial.print("%\t");
-  Serial.print("Temperature = ");
-  Serial.print(relTemp); //Displays the integer bits of temperature;
-  Serial.print("C\t");
-  Serial.print("Light: ");
-  Serial.println(relLight);
-  Serial.println("");
+   
   }
 
   servo.write(70);
@@ -158,7 +150,17 @@ void loop()
     digitalWrite(motorPinL, LOW);
   }
 
-  Serial.println(servo.read());
+  if(relHum > 120){
+    servo.write(60);
+  } else {
+    servo.write(120);
+  }
+
+  if(relLight < 50){
+    digitalWrite(ledPin, LOW);
+  } else {
+    digitalWrite(ledPin, HIGH);
+  }
 
   if(startHum == 0 && hum > 0){
     startHum = hum;
@@ -176,7 +178,21 @@ void loop()
 
   if (currentMillis - previousMillis >= 3000) { //envia la temperatura cada 10 segundos
     previousMillis = currentMillis;
-    
+     Serial.print("Humdity = ");
+  Serial.print(humSum/humCount); //Displays the integer bits of humidity;
+  Serial.print("% (");
+  Serial.print(relHum);
+  Serial.print("%)\t");
+  Serial.print("Temperature = ");
+  Serial.print(tempSum/tempCount);
+  Serial.print("°C (");
+  Serial.print(relTemp); //Displays the integer bits of temperature;
+  Serial.print("%)\t");
+  Serial.print("Light: ");
+  Serial.print(lightSum/lightCount);
+  Serial.print("mV (");
+  Serial.println(relLight);
+  Serial.println("%)\n");
 
   
     enviardatos("&Temperatura=" + String(tempSum/tempCount, 2) + "&Humedad=" + String(humSum/humCount, 2) + "&Luz=" + String(lightSum/lightCount, 2));
