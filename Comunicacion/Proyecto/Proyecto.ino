@@ -29,7 +29,7 @@ const char *pass = "12345678";
 
 
 char host[48];
-String strhost = "172.20.10.7"
+String strhost = "172.20.10.7";
 String strurl = "/enviardatos.php";
 
 
@@ -139,8 +139,7 @@ void loop()
    
   }
 
-  servo.write(70);
-
+ 
 
   if(relTemp > 101){
     digitalWrite(motorPinR, HIGH);
@@ -151,9 +150,10 @@ void loop()
   }
 
   if(relHum > 120){
-    servo.write(60);
-  } else {
     servo.write(120);
+
+  } else {
+    servo.write(60);
   }
 
   if(relLight < 50){
@@ -189,13 +189,13 @@ void loop()
   Serial.print(relTemp); //Displays the integer bits of temperature;
   Serial.print("%)\t");
   Serial.print("Light: ");
-  Serial.print(lightSum/lightCount);
+  Serial.print(light);
   Serial.print("mV (");
   Serial.println(relLight);
   Serial.println("%)\n");
 
   
-    enviardatos("&Temperatura=" + String(tempSum/tempCount, 2) + "&Humedad=" + String(humSum/humCount, 2) + "&Luz=" + String(lightSum/lightCount, 2));
+    enviardatos("&Luz=" + String(light/10, 2)+"&Temperatura=" + String(tempSum/tempCount, 2) + "&Humedad=" + String(humSum/humCount, 2) );
     tempSum = humSum = lightSum = tempCount = humCount = lightCount = 0;
   }
 }
